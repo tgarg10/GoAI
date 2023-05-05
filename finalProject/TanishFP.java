@@ -252,13 +252,13 @@ public class TanishFP implements FinalProject {
         class BestMove {
             private char[][] board;
             private int p; 
-            private int depth;
+            private int dpth;
 
             HashMap<String, Integer> scoreDictionary = new HashMap<>();
             
             public BestMove(char[][] b, int depth, int player) {
                 this.board = b;
-                this.depth = depth;
+                this.dpth = depth;
                 this.p = player;
                 this.scoreDictionary.put("11111", 100); // Five in a Row
                 this.scoreDictionary.put("11110", 100); // Live Four
@@ -307,7 +307,7 @@ public class TanishFP implements FinalProject {
                     // Opponent Wins
                     else return -10000;
                 }
-
+                
                 // Playing all possible moves in current combination
                 if (p == player) {
                     int curMax = Integer.MIN_VALUE;
@@ -399,7 +399,7 @@ public class TanishFP implements FinalProject {
                         if (board[i][j] == '.' && !checkNotValid(board, i, j))  {   
                             // System.out.println(i + " " + j);
                             board[i][j] = tPlayer;
-                            int miniMaxValue = miniMax(board, depth - 1, curMax, op);
+                            int miniMaxValue = miniMax(board, dpth - 1, curMax, op);
                             if (miniMaxValue > curMax) {
                                 curMax = miniMaxValue;
                                 moves = new int[] {i, j};
@@ -412,7 +412,7 @@ public class TanishFP implements FinalProject {
             }
         }
 
-        BestMove findBestMove = new BestMove(b, 2, player);
+        BestMove findBestMove = new BestMove(b, 3, player);
         int[] move = findBestMove.calculatingBestMove();
         
         return move;
