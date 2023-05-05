@@ -27,8 +27,7 @@ public class TanishFP implements FinalProject {
                     }
                     row[i] = S;
                 }
-                return row;
-                
+                return row;    
             }
 
             public String[] convertToColumnString() {
@@ -43,8 +42,7 @@ public class TanishFP implements FinalProject {
                     }
                     column[i] = S;
                 }
-                return column;
-                
+                return column;   
             }
 
             // From bottom left to top right --> /
@@ -120,21 +118,24 @@ public class TanishFP implements FinalProject {
             private char[][] board;
             private int p; 
             private int depth;
-            private int staticDepth;
+            private boolean turn;
 
-            public BestMove(char[][] b, int player, int depth) {
+            public BestMove(char[][] b, int depth, boolean turn) {
                 this.board = b;
-                this.p = player;
                 this.depth = depth;
-                this.staticDepth = depth;
+                this.turn = turn;
             }
 
-            public int miniMax(int depth, char[][] currentBoard, int turnPlayer) {
+            // Current Board - Simulated board
+            // Depth - depth
+            // Player - 1 or 2
+            // Turn - 
+            public int miniMax(char[][] currentBoard, int depth, int player, boolean turn) {
 
                 // Setting Opponent in current game simulation
                 int opponentPlayer;
                 char plyr;
-                if (turnPlayer == 1) {
+                if (turnPlayer) {
                     opponentPlayer = 2;
                     plyr = 'X';
                 } 
@@ -144,11 +145,11 @@ public class TanishFP implements FinalProject {
                 }
                 
                 // Opponent wins
-                if (isShortGameOver(currentBoard) == opponentPlayer) return Integer.MIN_VALUE;
+                if (isShortGameOver(currentBoard) != 0 || boardIsFull(currentBoard)) {
+                    if ()
+                    return Integer.MIN_VALUE;
                 // Current Player Wins
                 if (isShortGameOver(currentBoard) == turnPlayer) return Integer.MAX_VALUE;
-                // If Draw
-                if (isShortGameOver(currentBoard) == 0) return 0;
 
                 // Base Case
                 if (depth == 0) return calculateScore(b, plyr);
@@ -205,11 +206,10 @@ public class TanishFP implements FinalProject {
 
                 int score = 0;
 
-                
                 HashMap<String, Integer> scoreDictionary = new HashMap<>();
-                scoreDictionary.put("11111", 100);
-                scoreDictionary.put("11110", 100);
-                scoreDictionary.put("11101", 100);
+                scoreDictionary.put("11111", 100); // Five in a Row
+                scoreDictionary.put("11110", 100); // Live Four
+                scoreDictionary.put("11101", 100); // Live Four
                 scoreDictionary.put("11011", 100);
                 scoreDictionary.put("10111", 100);
                 scoreDictionary.put("01111", 100);
@@ -266,7 +266,7 @@ public class TanishFP implements FinalProject {
             }
         }
 
-        BestMove findBestMove = new BestMove(b, player, 2);
+        BestMove findBestMove = new BestMove(1, b, true);
         int[] move = findBestMove.calculatingBestMove();
 
         return move;
@@ -352,10 +352,89 @@ public class TanishFP implements FinalProject {
         return hasXorO;
 
     }
+
     @Override
     public int isLongGameOver(char[][] b) {
-        // TODO Auto-generated method stub
-        return 0;
+        if(!boardIsFull(b)) return -1;
+
+        int score1 = longGameScore(b, 1);
+        int score2 = longGameScore(b, 2);
+        if(score1 == score2) return 0;
+        return score1 > score2 ? 1 : 2;
     }
+
+    private boolean boardIsFull(char[][] board) {
+        for (int i = 0; i < 20; i++) {
+            for (int j = 0; j < 20; j++) {
+                if (board[i][j] == '.')
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    private int longGameScore(char[][] b, int p) {
+		char c = (p == 1) ? 'X' : 'O';
+        int score = 0;
+
+        // Vertical
+        for(int j = 0; j < 20; j++){
+            int rl = 0; // run length
+            for(int i = 0; i <= 20; i++){
+                if(i < 20 && b[i][j] == c){
+                    rl++;
+                } else {
+                    score += (rl / 5);
+                    rl = 0;
+                }
+            }
+        }
+        //System.out.println(c + ", V, Long Game Score: " + score);
+
+        // Horizontal
+        for(int i = 0; i < 20; i++){
+            int rl = 0; // run length
+            for(int j = 0; j <= 20; j++){
+                if(j < 20 && b[i][j] == c){
+                    rl++;
+                } else {
+                    score += (rl / 5);
+                    rl = 0;
+                }
+            }
+        }
+        //System.out.println(c + ", H, Long Game Score: " + score);
+
+        // Southeast
+        for(int s = -15; s <= 15; s++){
+            int rl = 0; // run length
+            for(int j = Math.max(-s, 0); j <= 20 && s+j <= 20; j++){
+                int i = s + j;
+                if(i < 20 && j < 20 && b[i][j] == c){
+                    rl++;
+                } else {
+                    score += (rl / 5);
+                    rl = 0;
+                }
+            }
+        }
+        //System.out.println(c + ", S, Long Game Score: " + score);
+
+        // Northeast
+        for(int s = -15; s <= 15; s++){
+            int rl = 0; // run length
+            for(int j = Math.max(-s, 0); j <= 20 && s+j <= 20; j++){
+                int i = 19 - (s + j);
+                if(i >= 0 && i < 20 && j < 20 && b[i][j] == c){
+                    rl++;
+                } else {
+                    score += (rl / 5);
+                    rl = 0;
+                }
+            }
+        }
+        //System.out.println(c + ", N, Long Game Score: " + score);
+        return score;
+	}
     
 }
