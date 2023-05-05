@@ -260,7 +260,7 @@ public class TanishFP implements FinalProject {
                 this.board = b;
                 this.dpth = depth;
                 this.p = player;
-                this.scoreDictionary.put("11111", 100); // Five in a Row
+                this.scoreDictionary.put("11111", 10000); // Five in a Row
                 this.scoreDictionary.put("11110", 100); // Live Four
                 this.scoreDictionary.put("11101", 100); // Live Four
                 this.scoreDictionary.put("11011", 100);
@@ -293,12 +293,17 @@ public class TanishFP implements FinalProject {
                 }
 
                 // Base Case
-                if (depth == 0) {
+                if (depth == 1) {
                     int score = calculateScore(b, tPlayer);
-                    if (p == player) return score;
-                    else return -score;
+                    if (p == player) {
+                        return score;
+                    }
+                    else {
+                        return -score;
+                    } 
                 }
 
+                /*
                 if (isShortGameOver(currentBoard) != 0 || boardIsFull(currentBoard)) {
                     // Current Player wins
                     if (isShortGameOver(currentBoard) == p) return 10000;
@@ -307,6 +312,7 @@ public class TanishFP implements FinalProject {
                     // Opponent Wins
                     else return -10000;
                 }
+                */
                 
                 // Playing all possible moves in current combination
                 if (p == player) {
@@ -397,7 +403,6 @@ public class TanishFP implements FinalProject {
                 for (int i = 0; i < 20; i++) {
                     for (int j = 0; j < 20; j++) {
                         if (board[i][j] == '.' && !checkNotValid(board, i, j))  {   
-                            // System.out.println(i + " " + j);
                             board[i][j] = tPlayer;
                             int miniMaxValue = miniMax(board, dpth - 1, curMax, op);
                             if (miniMaxValue > curMax) {
@@ -405,14 +410,14 @@ public class TanishFP implements FinalProject {
                                 moves = new int[] {i, j};
                             }
                             board[i][j] = '.';
-                        }
+                        } 
                     }
                 }
                 return moves;
             }
         }
 
-        BestMove findBestMove = new BestMove(b, 3, player);
+        BestMove findBestMove = new BestMove(b, 4, player);
         int[] move = findBestMove.calculatingBestMove();
         
         return move;
