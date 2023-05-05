@@ -15,12 +15,10 @@ public class TanishFP implements FinalProject {
                 this.P = c;
             }
 
-            public String[] convertToRowString() {
-                String[] row = new String[20];
+            public String convertToRowString() {
                 String S = "";
                 int n = 0;
                 for (int i = 0; i < 20; i++) {
-                    S = "";
                     n = 0;
                     for (int j = 0; j < 20; j++) {
                         if (b[i][j] == P) {
@@ -37,17 +35,15 @@ public class TanishFP implements FinalProject {
                             S += "2";
                         } 
                     }
-                    row[i] = S;
+                    S += " ";
                 }
-                return row;    
+                return S;    
             }
 
-            public String[] convertToColumnString() {
-                String[] column = new String[20];
+            public String convertToColumnString() {
                 String S = "";
                 int n = 0;
                 for (int i = 0; i < 20; i++) {
-                    S = "";
                     for (int j = 0; j < 20; j++) {
                         if (b[j][i] == P){
                             n = 0;
@@ -63,9 +59,9 @@ public class TanishFP implements FinalProject {
                             S += "2";
                         } 
                     }
-                    column[i] = S;
+                    S += " ";
                 }
-                return column;   
+                return S;   
             }
 
             // ChatGPT wrote this function
@@ -137,13 +133,10 @@ public class TanishFP implements FinalProject {
             */
 
             // From bottom left to top right --> /
-            public String[] convertToDiagonal1String() {
-                String[] diagonal = new String[31];
+            public String convertToDiagonal1String() {
                 String S = "";
-                int a = 0;
                 int n = 0;
                 for (int i = 4; i < 20; i++) {
-                    S = "";
                     for (int j = i; j >= 0; j--) {
                         if (b[j][i-j] == P){
                             n = 0;
@@ -159,8 +152,7 @@ public class TanishFP implements FinalProject {
                             S += "2";
                         } 
                     }
-                    diagonal[a] = S;
-                    a++;
+                    S += " ";
                 }
 
                 for (int i = 1; i < 16; i++) {
@@ -180,22 +172,18 @@ public class TanishFP implements FinalProject {
                             S += "2";
                         } 
                     }
-                    diagonal[a] = S;
-                    a++;
+                    S += " ";
                 }
 
-                return diagonal;
+                return S;
             }
 
             // From top left to bottom right --> \
-            public String[] convertToDiagonal2String() {
-                String[] diagonal = new String[31];
+            public String convertToDiagonal2String() {
                 String S = "";
-                int a = 0;
                 int n = 0;
 
                 for (int i = 0; i < 15; i++) {
-                    S = "";
                     for (int j = 0; j < 20 - i - 1; j++) {
                         if (b[i+j+1][j] == P){
                             n = 0;
@@ -211,12 +199,10 @@ public class TanishFP implements FinalProject {
                             S += "2";
                         } 
                     }
-                    diagonal[a] = S;
-                    a++;
+                    S += " ";
                 }
 
                 for (int i = 0; i < 16; i++) {
-                    S = "";
                     for (int j = 0; j < 20 - i; j++) {
                         if (b[j][i+j] == P){
                             n = 0;
@@ -232,14 +218,13 @@ public class TanishFP implements FinalProject {
                             S += "2";
                         } 
                     }
-                    diagonal[a] = S;
-                    a++;
+                    S += " ";
                 }
-                return diagonal;
+                return S;
             }
         
-            public String[][] getStrings() {
-                String[][] returnArray = new String[4][]; 
+            public String[] getStrings() {
+                String[] returnArray = new String[4]; 
                 returnArray[0] = convertToRowString();
                 returnArray[1] = convertToColumnString();
                 // returnArray[2] = generateLongDiagonals();
@@ -260,7 +245,7 @@ public class TanishFP implements FinalProject {
                 this.board = b;
                 this.dpth = depth;
                 this.p = player;
-                this.scoreDictionary.put("11111", 10000); // Five in a Row
+                this.scoreDictionary.put("11111", 200); // Five in a Row
                 this.scoreDictionary.put("11110", 100); // Live Four
                 this.scoreDictionary.put("11101", 100); // Live Four
                 this.scoreDictionary.put("11011", 100);
@@ -276,7 +261,7 @@ public class TanishFP implements FinalProject {
             // Depth - depth
             // Alpha - Highest/Lowest Value from Previous Iteration
             // Player - 1 or 2
-            public int miniMax(char[][] currentBoard, int depth, int alpha, int player) {
+            public int miniMax(char[][] currentBoard, int depth, int alpha, int beta, int player) {
 
                 // Setting Opponent in current game simulation
                 int opponentPlayer = 1;
@@ -293,26 +278,20 @@ public class TanishFP implements FinalProject {
                 }
 
                 // Base Case
-                if (depth == 1) {
+                if (depth == 0) {
                     int score = calculateScore(b, tPlayer);
-                    if (p == player) {
-                        return score;
-                    }
-                    else {
-                        return -score;
-                    } 
+                    if (p == player) return score;
+                    else return -score;
                 }
 
-                /*
                 if (isShortGameOver(currentBoard) != 0 || boardIsFull(currentBoard)) {
                     // Current Player wins
-                    if (isShortGameOver(currentBoard) == p) return 10000;
+                    if (isShortGameOver(currentBoard) == p) return 200;
                     // Board filled up
                     else if (isShortGameOver(currentBoard) == 0) return 0;
                     // Opponent Wins
-                    else return -10000;
+                    else return -200;
                 }
-                */
                 
                 // Playing all possible moves in current combination
                 if (p == player) {
@@ -322,11 +301,11 @@ public class TanishFP implements FinalProject {
                             if (currentBoard[i][j] == '.' && !checkNotValid(currentBoard, i, j))  {
                                 // System.out.println(i + " " + j);
                                 currentBoard[i][j] = tPlayer;
-                                int miniMaxValue = miniMax(currentBoard, depth - 1, curMax, opponentPlayer);
+                                int miniMaxValue = miniMax(currentBoard, depth - 1, alpha, beta, opponentPlayer);
                                 if (miniMaxValue > curMax) {
                                     curMax = miniMaxValue;
                                 }
-                                // if (alpha <= curMax) return curMax;
+                                if (beta <= alpha) return curMax;
                                 currentBoard[i][j] = '.';
                             }
                         }
@@ -339,11 +318,11 @@ public class TanishFP implements FinalProject {
                             if (currentBoard[i][j] == '.' && !checkNotValid(currentBoard, i, j)) {
                                 // System.out.println(i + " " + j);
                                 currentBoard[i][j] = tPlayer;
-                                int miniMaxValue = miniMax(currentBoard, depth - 1, curMin, opponentPlayer);
-                                if (miniMaxValue < curMin) {
-                                    curMin = miniMaxValue;
+                                int miniMinValue = miniMax(currentBoard, depth - 1, alpha, beta, opponentPlayer);
+                                if (miniMinValue < curMin) {
+                                    curMin = miniMinValue;
                                 }
-                                // if (alpha >= curMin) return curMin;
+                                if (beta <= alpha) return curMin;
                                 currentBoard[i][j] = '.';
                             }
                         }
@@ -371,17 +350,18 @@ public class TanishFP implements FinalProject {
                 // String[] patternList = {"11111", "11110", "11101", "11011", "10111", "01111", "011100", "001110", "010110", "011010"};
 
                 convertToString cTS = new convertToString(b, player);
-                String[][] rv = cTS.getStrings();
-                for (String[] stringArray : rv) {
-                    for (String checkString : stringArray) {
+                String[] rv = cTS.getStrings();
+                int c = 0;
+                for (String stringArray : rv) {
                         for (String pattern : scoreDictionary.keySet()) {
-                            if (checkString.contains(pattern)) {
+                            c = stringArray.split(pattern, -1).length-1;
+                            if (c>0) {
                                 // System.out.println(pattern + " " + checkString);
-                                score += scoreDictionary.get(pattern);
+                                score += c* scoreDictionary.get(pattern);
+                                System.out.println(score);
                             }
                         }
                     }
-                }
                 return score;
             }
 
@@ -403,21 +383,22 @@ public class TanishFP implements FinalProject {
                 for (int i = 0; i < 20; i++) {
                     for (int j = 0; j < 20; j++) {
                         if (board[i][j] == '.' && !checkNotValid(board, i, j))  {   
+                            // System.out.println(i + " " + j);
                             board[i][j] = tPlayer;
-                            int miniMaxValue = miniMax(board, dpth - 1, curMax, op);
+                            int miniMaxValue = miniMax(board, dpth, Integer.MIN_VALUE, Integer.MAX_VALUE, op);
                             if (miniMaxValue > curMax) {
                                 curMax = miniMaxValue;
                                 moves = new int[] {i, j};
                             }
                             board[i][j] = '.';
-                        } 
+                        }
                     }
                 }
                 return moves;
             }
         }
 
-        BestMove findBestMove = new BestMove(b, 4, player);
+        BestMove findBestMove = new BestMove(b, 3, player);
         int[] move = findBestMove.calculatingBestMove();
         
         return move;
