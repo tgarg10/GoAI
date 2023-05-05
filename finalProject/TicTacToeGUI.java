@@ -27,6 +27,7 @@ public class TicTacToeGUI extends JFrame implements ActionListener {
         | InvocationTargetException | NoSuchMethodException | SecurityException
         | ClassNotFoundException e) {
             fp = null;
+            System.out.println("Error!!!");
             e.printStackTrace();
         }
         this.fp = fp;
