@@ -1,0 +1,10 @@
+this.scoreDictionary.put("22222", Integer.MIN_VALUE); // Five in a Row
+                this.scoreDictionary.put("22220", Integer.MIN_VALUE); // Live Four
+                this.scoreDictionary.put("22202", Integer.MIN_VALUE); // Live Four
+                this.scoreDictionary.put("22022", Integer.MIN_VALUE);
+                this.scoreDictionary.put("20222", Integer.MIN_VALUE);
+                this.scoreDictionary.put("02222", Integer.MIN_VALUE);
+                this.scoreDictionary.put("022200", Integer.MIN_VALUE);
+                this.scoreDictionary.put("002220", Integer.MIN_VALUE);
+                this.scoreDictionary.put("020220", Integer.MIN_VALUE);
+                this.scoreDictionary.put("022020", Integer.MIN_VALUE);

@@ -1,4 +1,3 @@
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Scanner;
 
@@ -72,8 +71,9 @@ public class FPTester {
                 for (int j = 0; j < 20; j++) {
                     System.out.print(board2[i][j]+"  ");
                 }
-                System.out.println();
+                System.out.println(alphs[i]);
             }
+            System.out.println("   1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20");
             inpmv = scan.nextLine();
             board2 = playMove(board2, inpmv);
         }
@@ -82,7 +82,7 @@ public class FPTester {
     public static char[][] playMove(char[][] b, String mv) {
         
         int r = (int) mv.charAt(0) - 'A';
-        int c = (int) mv.charAt(1) - '1';
+        int c = Integer.parseInt(mv.substring(1))-1;
         b[r][c] = 'O';
         return b;
     }
