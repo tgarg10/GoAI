@@ -29,7 +29,7 @@ public class TanishFP implements FinalProject {
                         }
                         else if (b[i][j] == '.') {
                             n++;
-                            // if (n > 2) continue;
+                            if (n > 2) continue;
                             S += "0";
                         }
                         else {
@@ -55,7 +55,7 @@ public class TanishFP implements FinalProject {
                         }
                         else if (b[j][i] == '.') {
                             n++;
-                            // if (n > 2) continue;
+                            if (n > 2) continue;
                             S += "0";
                         }
                         else {
@@ -151,7 +151,7 @@ public class TanishFP implements FinalProject {
                         }
                         else if (b[j][i-j] == '.') {
                             n++;
-                            // if (n > 2) continue;
+                            if (n > 2) continue;
                             S += "0";
                         }
                         else {
@@ -172,7 +172,7 @@ public class TanishFP implements FinalProject {
                         }
                         else if (b[19-j+i][j] == '.') {
                             n++;
-                            // if (n > 2) continue;
+                            if (n > 2) continue;
                             S += "0";
                         }
                         else {
@@ -203,7 +203,7 @@ public class TanishFP implements FinalProject {
                         }
                         else if (b[i+j+1][j] == '.') {
                             n++;
-                            // if (n > 2) continue;
+                            if (n > 2) continue;
                             S += "0";
                         }
                         else {
@@ -224,7 +224,7 @@ public class TanishFP implements FinalProject {
                         }
                         else if (b[j][i+j] == '.') {
                             n++;
-                            // if (n > 2) continue;
+                            if (n > 2) continue;
                             S += "0";
                         }
                         else {
@@ -245,9 +245,6 @@ public class TanishFP implements FinalProject {
                 // returnArray[2] = generateLongDiagonals();
                 returnArray[2] = convertToDiagonal1String();
                 returnArray[3] = convertToDiagonal2String();
-                // for (String s: returnArray[2]) System.out.println(s);
-                // System.out.println("------------------------------------------------");
-                // for (String s: returnArray[3]) System.out.println(s);
                 return returnArray;
             }
         }
@@ -323,7 +320,7 @@ public class TanishFP implements FinalProject {
                                 if (miniMaxValue > curMax) {
                                     curMax = miniMaxValue;
                                 }
-                                if (alpha <= curMax) return curMax;
+                                // if (alpha <= curMax) return curMax;
                                 currentBoard[i][j] = '.';
                             }
                         }
@@ -340,7 +337,7 @@ public class TanishFP implements FinalProject {
                                 if (miniMaxValue < curMin) {
                                     curMin = miniMaxValue;
                                 }
-                                if (alpha >= curMin) return curMin;
+                                // if (alpha >= curMin) return curMin;
                                 currentBoard[i][j] = '.';
                             }
                         }
@@ -349,7 +346,7 @@ public class TanishFP implements FinalProject {
                 }
             }
 
-            private boolean checkNotValid(char[][] cB, int i, int j) {
+            public boolean checkNotValid(char[][] cB, int i, int j) {
                 if (i > 0 && cB[i-1][j] != '.') return false;
                 if (i < 19 && cB[i+1][j] != '.') return false;
                 if (j > 0 && cB[i][j-1] != '.') return false;
@@ -415,7 +412,7 @@ public class TanishFP implements FinalProject {
             }
         }
 
-        BestMove findBestMove = new BestMove(b, 1, player);
+        BestMove findBestMove = new BestMove(b, 2, player);
         int[] move = findBestMove.calculatingBestMove();
         
         return move;
