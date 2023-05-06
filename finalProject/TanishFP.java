@@ -385,11 +385,7 @@ public class TanishFP implements FinalProject {
                 for (int i = 0; i < 20; i++) {
                     for (int j = 0; j < 20; j++) {
                         if (board[i][j] == '.' && !checkNotValid(board, i, j))  {   
-                            for (int h = 0; h < 20; h++) {
-                                for (int k = 0; k < 20; k++) 
-                                    System.out.print(board[h][k] + " ");
-                                    System.out.println();
-                            }
+                            // for (int h = 0; h < 20; h++) { for (int k = 0; k < 20; k++) System.out.print(board[h][k] + " "); System.out.println(); }
                             board[i][j] = tPlayer;
                             int miniMaxValue = miniMax(board, dpth, Integer.MIN_VALUE, Integer.MAX_VALUE, op, false);
                             if (miniMaxValue > curMax) {
@@ -405,7 +401,7 @@ public class TanishFP implements FinalProject {
             }
         }
 
-        BestMove findBestMove = new BestMove(b, 4, player);
+        BestMove findBestMove = new BestMove(b, 2, player);
         int[] move = findBestMove.calculatingBestMove();
         
         return move;
