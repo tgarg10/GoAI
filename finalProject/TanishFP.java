@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class TanishFP implements FinalProject {
@@ -263,6 +264,8 @@ public class TanishFP implements FinalProject {
             // Player - 1 or 2
             public int miniMax(char[][] currentBoard, int depth, int alpha, int beta, int player, boolean maxPlayer) {
 
+                // char[][] currentBoard = Arrays.copyOf(brd, 20);
+
                 // Setting Opponent in current game simulation
                 int opponentPlayer = 1;
 
@@ -277,13 +280,6 @@ public class TanishFP implements FinalProject {
                     tPlayer = 'O';
                 }
 
-                // Base Case
-                if (depth == 0) {
-                    int score = calculateScore(b, tPlayer);
-                    if (maxPlayer) return score;
-                    else return -score;
-                }
-
                 if (isShortGameOver(currentBoard) != 0 || boardIsFull(currentBoard)) {
                     // Current Player wins
                     if (isShortGameOver(currentBoard) == p) return 200;
@@ -295,6 +291,13 @@ public class TanishFP implements FinalProject {
                     }
                 }
                 
+                // Base Case
+                if (depth == 0) {
+                    int score = calculateScore(b, tPlayer);
+                    if (maxPlayer) return score;
+                    else return -score;
+                }
+
                 // Playing all possible moves in current combination
                 if (maxPlayer) {
                     int curMax = Integer.MIN_VALUE;
@@ -306,8 +309,8 @@ public class TanishFP implements FinalProject {
                                 int miniMaxValue = miniMax(currentBoard, depth - 1, alpha, beta, opponentPlayer, false) - depth;
                                 curMax = Math.max(miniMaxValue, curMax);
                                 alpha = Math.max(alpha, curMax);
-                                if (beta >= alpha) return curMax;
                                 currentBoard[i][j] = '.';
+                                // if (beta >= alpha) return curMax;
                             }
                         }
                     }
@@ -322,8 +325,8 @@ public class TanishFP implements FinalProject {
                                 int miniMaxValue = miniMax(currentBoard, depth - 1, alpha, beta, opponentPlayer, true);
                                 curMin = Math.min(miniMaxValue, curMin);
                                 beta = Math.min(beta, curMin);
-                                // if (beta <= alpha) return curMin;
                                 currentBoard[i][j] = '.';
+                                // if (beta <= alpha) return curMin;
                             }
                         }
                     }
@@ -382,8 +385,11 @@ public class TanishFP implements FinalProject {
                 for (int i = 0; i < 20; i++) {
                     for (int j = 0; j < 20; j++) {
                         if (board[i][j] == '.' && !checkNotValid(board, i, j))  {   
-                            System.out.println(i + " " +
-                             j);
+                            for (int h = 0; h < 20; h++) {
+                                for (int k = 0; k < 20; k++) 
+                                    System.out.print(board[h][k] + " ");
+                                    System.out.println();
+                            }
                             board[i][j] = tPlayer;
                             int miniMaxValue = miniMax(board, dpth, Integer.MIN_VALUE, Integer.MAX_VALUE, op, false);
                             if (miniMaxValue > curMax) {
@@ -399,7 +405,7 @@ public class TanishFP implements FinalProject {
             }
         }
 
-        BestMove findBestMove = new BestMove(b, 0, player);
+        BestMove findBestMove = new BestMove(b, 4, player);
         int[] move = findBestMove.calculatingBestMove();
         
         return move;
@@ -413,8 +419,6 @@ public class TanishFP implements FinalProject {
 
     @Override
     public int isShortGameOver(char[][] arr) {
-        // This method was taken from Hochberg.java
-
         // This method was largely written by ChatGPT!
         // Check for five consecutive Xs or Os horizontally
         int hasXorO = 0;
