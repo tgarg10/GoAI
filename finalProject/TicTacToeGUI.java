@@ -43,8 +43,6 @@ public class TicTacToeGUI extends JFrame implements ActionListener {
                 board[i][j] = '.';
             }
         }
-        // int[] mv = fp.playShortGame(board, 1);
-        // board[mv[0]][mv[1]] = botPlayer;
 
         setTitle("Tic Tac Toe 20x20");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -59,8 +57,11 @@ public class TicTacToeGUI extends JFrame implements ActionListener {
                 add(cells[row][col]);
             }
         }
-        // cells[mv[0]][mv[1]].setText(Character.toString(botPlayer));
-        // cells[mv[0]][mv[1]].setEnabled(false);
+        
+        int[] mv = fp.playShortGame(board, 1);
+        board[mv[0]][mv[1]] = botPlayer;
+        cells[mv[0]][mv[1]].setText(Character.toString(botPlayer));
+        cells[mv[0]][mv[1]].setEnabled(false);
 
         setVisible(true);
     }

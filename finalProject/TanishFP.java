@@ -253,11 +253,11 @@ public class TanishFP implements FinalProject {
                 // Five in a Row
                 this.scoreDictionary.put("11111", 100000); 
                 // Live Four
-                this.scoreDictionary.put("11110", 10000); 
-                this.scoreDictionary.put("11101", 10000); 
-                this.scoreDictionary.put("11011", 10000);
-                this.scoreDictionary.put("10111", 10000);
-                this.scoreDictionary.put("01111", 10000);
+                this.scoreDictionary.put("11110", 100000); 
+                this.scoreDictionary.put("11101", 100000); 
+                this.scoreDictionary.put("11011", 100000);
+                this.scoreDictionary.put("10111", 100000);
+                this.scoreDictionary.put("01111", 100000);
                 // Potential Four Three
                 this.scoreDictionary.put("011100", 5000);
                 this.scoreDictionary.put("001110", 5000);
@@ -297,11 +297,11 @@ public class TanishFP implements FinalProject {
                 // Five in a Row
                 this.scoreDictionary.put("22222", -100000); 
                 // Live Four
-                this.scoreDictionary.put("22220", -10000); 
-                this.scoreDictionary.put("22202", -10000); 
-                this.scoreDictionary.put("22022", -10000);
-                this.scoreDictionary.put("20222", -10000);
-                this.scoreDictionary.put("02222", -10000);
+                this.scoreDictionary.put("22220", -100000); 
+                this.scoreDictionary.put("22202", -100000); 
+                this.scoreDictionary.put("22022", -100000);
+                this.scoreDictionary.put("20222", -100000);
+                this.scoreDictionary.put("02222", -100000);
                 // Potential Four Three
                 this.scoreDictionary.put("022200", -5000);
                 this.scoreDictionary.put("002220", -5000);
@@ -368,9 +368,9 @@ public class TanishFP implements FinalProject {
                         return 0;
                     }
                     // Current Player wins
-                    if (isShortGameOver(currentBoard) == p) return 100000;
+                    if (isShortGameOver(currentBoard) == p) return 200000;
                     // Opponent Wins
-                    else return -100000;
+                    else return -200000;
                 }
 
                 // Base Case

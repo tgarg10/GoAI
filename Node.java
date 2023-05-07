@@ -145,12 +145,12 @@ class TicTacToeSimulator {
 		
 		forLoop1: for (ArrayList<Integer> w: winningMoves) {
 			int n = 0;
-			for (Integer index: w) {
+			for (int index: w) {
 				if (gameState [index] != player) {
 					continue forLoop1;
 				} else n++;
 			}
-			if (n == 4) return player;
+			if (n == WINNING_LENGTH) return player;
 		}
 
 		ArrayList<Integer> moves = getAllpossibleMoves(gameState);
