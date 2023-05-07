@@ -249,26 +249,93 @@ public class TanishFP implements FinalProject {
                 this.board = b2;
                 this.dpth = depth;
                 this.p = player;
-                this.scoreDictionary.put("11111", 4); // Five in a Row
-                this.scoreDictionary.put("11110", 2); // Live Four
-                this.scoreDictionary.put("11101", 2); // Live Four
-                this.scoreDictionary.put("11011", 2);
-                this.scoreDictionary.put("10111", 2);
-                this.scoreDictionary.put("01111", 2);
-                // this.scoreDictionary.put("011100", 100);
-                // this.scoreDictionary.put("001110", 100);
-                // this.scoreDictionary.put("010110", 100);
-                // this.scoreDictionary.put("011010", 100);
-                this.scoreDictionary.put("22222", -4); // Five in a Row
-                this.scoreDictionary.put("22220", -2); // Live Four
-                this.scoreDictionary.put("22202", -2); // Live Four
-                this.scoreDictionary.put("22022", -2);
-                this.scoreDictionary.put("20222", -2);
-                this.scoreDictionary.put("02222", -2);
-                // this.scoreDictionary.put("022200", -100);
-                // this.scoreDictionary.put("002220", -100);
-                // this.scoreDictionary.put("020220", -100);
-                // this.scoreDictionary.put("022020", -100);
+                
+                // Five in a Row
+                this.scoreDictionary.put("11111", 100000); 
+                // Live Four
+                this.scoreDictionary.put("11110", 10000); 
+                this.scoreDictionary.put("11101", 10000); 
+                this.scoreDictionary.put("11011", 10000);
+                this.scoreDictionary.put("10111", 10000);
+                this.scoreDictionary.put("01111", 10000);
+                // Potential Four Three
+                this.scoreDictionary.put("011100", 5000);
+                this.scoreDictionary.put("001110", 5000);
+                this.scoreDictionary.put("010110", 5000);
+                this.scoreDictionary.put("011010", 5000);
+                // Live Three
+                this.scoreDictionary.put("00111", 1000);
+                this.scoreDictionary.put("01011", 1000);
+                this.scoreDictionary.put("01101", 1000);
+                this.scoreDictionary.put("01101", 1000);
+                this.scoreDictionary.put("10011", 1000);
+                this.scoreDictionary.put("10110", 1000);
+                this.scoreDictionary.put("10101", 1000);
+                this.scoreDictionary.put("11001", 1000);
+                this.scoreDictionary.put("11010", 1000);
+                this.scoreDictionary.put("11100", 1000);
+                // Live Twos
+                this.scoreDictionary.put("00011", 100);
+                this.scoreDictionary.put("00110", 100);
+                this.scoreDictionary.put("00101", 100);
+                this.scoreDictionary.put("01001", 100);
+                this.scoreDictionary.put("01100", 100);
+                this.scoreDictionary.put("01010", 100);
+                this.scoreDictionary.put("10001", 100);
+                this.scoreDictionary.put("10010", 100);
+                this.scoreDictionary.put("10100", 100);
+                this.scoreDictionary.put("11000", 100);
+                // Live Ones
+                this.scoreDictionary.put("00001", 1);
+                this.scoreDictionary.put("00010", 1);
+                this.scoreDictionary.put("00100", 1);
+                this.scoreDictionary.put("01000", 1);
+                this.scoreDictionary.put("10000", 1);
+
+                // --------------
+
+                // Five in a Row
+                this.scoreDictionary.put("22222", -100000); 
+                // Live Four
+                this.scoreDictionary.put("22220", -10000); 
+                this.scoreDictionary.put("22202", -10000); 
+                this.scoreDictionary.put("22022", -10000);
+                this.scoreDictionary.put("20222", -10000);
+                this.scoreDictionary.put("02222", -10000);
+                // Potential Four Three
+                this.scoreDictionary.put("022200", -5000);
+                this.scoreDictionary.put("002220", -5000);
+                this.scoreDictionary.put("020220", -5000);
+                this.scoreDictionary.put("022020", -5000);
+                // Live Three
+                this.scoreDictionary.put("00222", -1000);
+                this.scoreDictionary.put("02022", -1000);
+                this.scoreDictionary.put("02202", -1000);
+                this.scoreDictionary.put("02202", -1000);
+                this.scoreDictionary.put("20022", -1000);
+                this.scoreDictionary.put("20220", -1000);
+                this.scoreDictionary.put("20202", -1000);
+                this.scoreDictionary.put("22002", -1000);
+                this.scoreDictionary.put("22020", -1000);
+                this.scoreDictionary.put("22200", -1000);
+                // Live Twos
+                this.scoreDictionary.put("00022", -100);
+                this.scoreDictionary.put("00220", -100);
+                this.scoreDictionary.put("00202", -100);
+                this.scoreDictionary.put("02002", -100);
+                this.scoreDictionary.put("02200", -10);
+                this.scoreDictionary.put("02020", -100);
+                this.scoreDictionary.put("20002", -100);
+                this.scoreDictionary.put("20020", -100);
+                this.scoreDictionary.put("20200", -100);
+                this.scoreDictionary.put("22000", -100);
+                // Live Ones
+                this.scoreDictionary.put("00002", -1);
+                this.scoreDictionary.put("00020", -1);
+                this.scoreDictionary.put("00200", -1);
+                this.scoreDictionary.put("02000", -1);
+                this.scoreDictionary.put("20000", -1);
+                
             }
 
             // Current Board - Simulated board
@@ -296,11 +363,14 @@ public class TanishFP implements FinalProject {
 
                 if (isShortGameOver(currentBoard) != -1 || boardIsFull(currentBoard)) {
                     // Board filled up
-                    if (isShortGameOver(currentBoard) == -1) return 0;
+                    if (isShortGameOver(currentBoard) == -1) {
+                        // System.out.println("Board Full!");
+                        return 0;
+                    }
                     // Current Player wins
-                    if (isShortGameOver(currentBoard) == p) return 4;
+                    if (isShortGameOver(currentBoard) == p) return 100000;
                     // Opponent Wins
-                    else return -4;
+                    else return -100000;
                 }
 
                 // Base Case
@@ -326,7 +396,7 @@ public class TanishFP implements FinalProject {
                                 curMax = Math.max(miniMaxValue, curMax);
                                 alpha = Math.max(alpha, curMax);
                                 currentBoard[i][j] = '.';
-                                // if (alpha >= beta) return curMax;
+                                if (alpha >= beta) return curMax;
                             }
                         }
                     }
@@ -374,7 +444,9 @@ public class TanishFP implements FinalProject {
 
                 convertToString cTS = new convertToString(b, player);
                 String[] rv = cTS.getStrings();
+                
                 int c = 0;
+             
                 for (String stringArray : rv) {
                     // System.out.println(stringArray);
                         for (String pattern : scoreDictionary.keySet()) {
@@ -385,6 +457,62 @@ public class TanishFP implements FinalProject {
                             }
                         }
                     }
+                
+                /*
+                for (String stringArray : rv) {
+                    // Five
+                    if (stringArray.contains("11111")) score += 100000; 
+                    // Live Four
+                    if (stringArray.contains("011110")) score += 15000; 
+                    // Live Three, Dead four
+                    if ((stringArray.contains("00111") || stringArray.contains("01011") || stringArray.contains("01101") || stringArray.contains("01110") || stringArray.contains("10110") || stringArray.contains("11100") || stringArray.contains("11001") || stringArray.contains("11010"))
+                        || stringArray.contains("11110") || stringArray.contains("11101") || stringArray.contains("11011") || stringArray.contains("10111") || stringArray.contains("01111"))
+                         score += 10000; 
+                    // Two Live Threes
+                    int n = 0;
+                    if (stringArray.contains("00111")) n += 1;
+                    if (stringArray.contains("01011")) n += 1;
+                    if (stringArray.contains("01101")) n += 1;
+                    if (stringArray.contains("01110")) n += 1;
+                    if (stringArray.contains("10110")) n += 1;
+                    if (stringArray.contains("11100")) n += 1;
+                    if (stringArray.contains("11001")) n += 1;
+                    if (stringArray.contains("11010")) n += 1;
+                    if (n > 1) score += 5000;
+                    
+                    // Dead four
+                    if (stringArray.contains("11110") || stringArray.contains("11101") || stringArray.contains("11011") || stringArray.contains("10111") || stringArray.contains("01111")) 
+                        score += 1000; 
+
+                    // ------------------ //
+                    /*
+                    // Five
+                    if (stringArray.contains("22222")) score -= 100000; 
+                    // Live Four
+                    if (stringArray.contains("022220")) score -= 15000; 
+                    // Live Three, Dead four
+                    if ((stringArray.contains("00222") || stringArray.contains("02022") || stringArray.contains("02202") || stringArray.contains("02220") || stringArray.contains("20220") || stringArray.contains("22200") || stringArray.contains("22002") || stringArray.contains("22020"))
+                        || stringArray.contains("22220") || stringArray.contains("22202") || stringArray.contains("22022") || stringArray.contains("20222") || stringArray.contains("02222"))
+                            score -= 10000; 
+                    // Two Live Threes
+                    n = 0;
+                    if (stringArray.contains("00222")) n += 1;
+                    if (stringArray.contains("02022")) n += 1;
+                    if (stringArray.contains("02202")) n += 1;
+                    if (stringArray.contains("02220")) n += 1;
+                    if (stringArray.contains("20220")) n += 1;
+                    if (stringArray.contains("22200")) n += 1;
+                    if (stringArray.contains("22002")) n += 1;
+                    if (stringArray.contains("22020")) n += 1;
+                    if (n > 2) score -= 5000;
+                    
+                    // Dead four
+                    if (stringArray.contains("22220") || stringArray.contains("22202") || stringArray.contains("22022") || stringArray.contains("20222") || stringArray.contains("02222")) 
+                        score -= 1000; 
+                    
+                }  
+                */
+
                 return score;
             }
 
