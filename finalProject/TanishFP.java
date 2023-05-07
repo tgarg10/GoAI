@@ -266,7 +266,7 @@ public class TanishFP implements FinalProject {
                 // Live Three
                 this.scoreDictionary.put("00111", 1000);
                 this.scoreDictionary.put("01011", 1000);
-                this.scoreDictionary.put("01101", 1000);
+                this.scoreDictionary.put("01110", 1000);
                 this.scoreDictionary.put("01101", 1000);
                 this.scoreDictionary.put("10011", 1000);
                 this.scoreDictionary.put("10110", 1000);
@@ -286,11 +286,11 @@ public class TanishFP implements FinalProject {
                 this.scoreDictionary.put("10100", 100);
                 this.scoreDictionary.put("11000", 100);
                 // Live Ones
-                this.scoreDictionary.put("00001", 1);
-                this.scoreDictionary.put("00010", 1);
-                this.scoreDictionary.put("00100", 1);
-                this.scoreDictionary.put("01000", 1);
-                this.scoreDictionary.put("10000", 1);
+                this.scoreDictionary.put("00001", 10);
+                this.scoreDictionary.put("00010", 10);
+                this.scoreDictionary.put("00100", 10);
+                this.scoreDictionary.put("01000", 10);
+                this.scoreDictionary.put("10000", 10);
 
                 // --------------
 
@@ -311,7 +311,7 @@ public class TanishFP implements FinalProject {
                 this.scoreDictionary.put("00222", -1000);
                 this.scoreDictionary.put("02022", -1000);
                 this.scoreDictionary.put("02202", -1000);
-                this.scoreDictionary.put("02202", -1000);
+                this.scoreDictionary.put("02220", -1000);
                 this.scoreDictionary.put("20022", -1000);
                 this.scoreDictionary.put("20220", -1000);
                 this.scoreDictionary.put("20202", -1000);
@@ -330,11 +330,11 @@ public class TanishFP implements FinalProject {
                 this.scoreDictionary.put("20200", -100);
                 this.scoreDictionary.put("22000", -100);
                 // Live Ones
-                this.scoreDictionary.put("00002", -1);
-                this.scoreDictionary.put("00020", -1);
-                this.scoreDictionary.put("00200", -1);
-                this.scoreDictionary.put("02000", -1);
-                this.scoreDictionary.put("20000", -1);
+                this.scoreDictionary.put("00002", -10);
+                this.scoreDictionary.put("00020", -10);
+                this.scoreDictionary.put("00200", -10);
+                this.scoreDictionary.put("02000", -10);
+                this.scoreDictionary.put("20000", -10);
                 
             }
 
@@ -391,7 +391,7 @@ public class TanishFP implements FinalProject {
                                 currentBoard[i][j] = tPlayer;
                                 int miniMaxValue = miniMax(currentBoard, depth - 1, alpha, beta, opponentPlayer, false);
                                 // if (miniMaxValue >= 0) value = Math.pow(miniMaxValue;
-                                //else value = - Math.pow(-miniMaxValue, depth + 1);
+                                //else value = - Math.pow(-miniMaxValue, depth + 10);
                                 
                                 curMax = Math.max(miniMaxValue, curMax);
                                 alpha = Math.max(alpha, curMax);
@@ -410,8 +410,8 @@ public class TanishFP implements FinalProject {
                                 // System.out.println(curMin + ": " + i + " " + j);
                                 currentBoard[i][j] = tPlayer;
                                 int miniMaxValue = miniMax(currentBoard, depth - 1, alpha, beta, opponentPlayer, true);
-                                // if (miniMaxValue >= 0) value = Math.pow(miniMaxValue, depth + 1);
-                                // else value = - Math.pow(-miniMaxValue, depth + 1);
+                                // if (miniMaxValue >= 0) value = Math.pow(miniMaxValue, depth + 10);
+                                // else value = - Math.pow(-miniMaxValue, depth + 10);
                                 // System.out.println(value);
                                 curMin = Math.min(miniMaxValue, curMin);
                                 beta = Math.min(beta, curMin);
@@ -648,7 +648,7 @@ public class TanishFP implements FinalProject {
     public int isLongGameOver(char[][] b) {
         if(!boardIsFull(b)) return -1;
 
-        int score1 = longGameScore(b, 1);
+        int score1 = longGameScore(b, 10);
         int score2 = longGameScore(b, 2);
         if(score1 == score2) return 0;
         return score1 > score2 ? 1 : 2;

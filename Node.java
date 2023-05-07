@@ -8,9 +8,6 @@ import java.util.Random;
 
 class Node implements Comparable <Node> { // representing the state of the game
 
-
-
-	
     int player; // 0 if o's turn has been played, 1 otherwise;
 	Node parent;
     int [] gameState; // representing the board
@@ -59,10 +56,11 @@ class TicTacToeSimulator {
 		setWinningMoves();
 	}
 
-	public static int ROWS = 20;
-	public static int COLS = 20;
-	public static int WINNING_LENGTH = 5; 
+	public static int ROWS = 5;
+	public static int COLS = 5;
+	public static int WINNING_LENGTH = 3; 
 
+	// Generating 
 	private void setWinningMoves() {
 
 		winningMoves = new ArrayList<ArrayList<Integer>>();
@@ -102,6 +100,7 @@ class TicTacToeSimulator {
 			}
 		}
 		System.out.println("Total winning moves: " + winningMoves.size());
+		System.out.println(winningMoves);
 	}
 	
 	
@@ -114,9 +113,8 @@ class TicTacToeSimulator {
 		int [] currentGameState = n.gameState.clone();
 		
 
+		// simulates game until either player wins or they draw
 		while (true) { // simulate a random game
-
-			
 			ArrayList<Integer> moves = getAllpossibleMoves(currentGameState);
 			int randomMoveIndex = rand.nextInt(moves.size());
 			int moveToMake = moves.get(randomMoveIndex);
@@ -142,12 +140,12 @@ class TicTacToeSimulator {
 		return allPossibleMoves;
 	}
 	
+	// Returns Player if won else Draw if empty, Otherwise Game Continues
 	int checkWinOrDraw(int [] gameState, int player) {
 		
 		forLoop1: for (ArrayList<Integer> w: winningMoves) {
 			int n = 0;
 			for (Integer index: w) {
-				
 				if (gameState [index] != player) {
 					continue forLoop1;
 				} else n++;
@@ -186,18 +184,27 @@ class MCTSBestMoveFinder {
 		simulator = new TicTacToeSimulator();
 	}
 
+	// Select nodes that need to be rolled out. If there are any, use them. 
+	// Otherwise find more from their children.
     Node selectNodeForRollout() { //select
 		
 		Node currentNode = rootNode;
 	
 		while (true) {
 			
-            if (currentNode.winner != TicTacToeSimulator.GAME_CONTINUES) return currentNode; // if terminal node is selected return it for scoring
+			// if the game is complete, then just return the node for scoring
+            if (currentNode.winner != TicTacToeSimulator.GAME_CONTINUES) 
+				return currentNode; // if terminal node is selected return it for scoring
+
+			// Otherwise
+			// check if no children -- > Generate children and return the first one
 	        if (currentNode.children.isEmpty()) {
 	        	 
 	        	generateChildren(currentNode);
 	        	return currentNode.children.get(0);
-	        } else {
+	        } 
+			// If children, then set their UCTValues
+			else {
 	        	for (Node child: currentNode.children) {
 	        		child.setUCTValue();
 	        	}
@@ -245,14 +252,18 @@ class MCTSBestMoveFinder {
 			
 		}
 
-        double numVisits = 0; // iterate over the children of the root node and pick as best move the node which had been visited most often
+		// TODO We need to check if this ought to be by UCTC values.
+		// iterate over the children of the root node and pick as best move the node 
+		// which had been visited most often
+        double numVisits = 0; 
         for (Node child: rootNode.children) {
             if (child.numVisits > numVisits) {
                 bestMove = child;
                 numVisits = child.numVisits;
             }
         }
-        for (Node child: rootNode.children) System.out.println(Arrays.toString(child.gameState) + " " + child.numVisits + " " +child.victories +" "+child.draws+" "+ child.losses +" "+ child.UCTValue + " " + child.move);
+        for (Node child: rootNode.children) 
+			System.out.println(Arrays.toString(child.gameState) + " " + child.numVisits + " " +child.victories +" "+child.draws+" "+ child.losses +" "+ child.UCTValue + " " + child.move);
 		System.out.println();
         simulator.printGameState2D(bestMove.gameState);
 		System.out.println();
