@@ -20,7 +20,6 @@ public class TanishFP implements FinalProject {
                 String S = "";
                 int n = 0;
                 for (int i = 0; i < 20; i++) {
-                    n = 0;
                     for (int j = 0; j < 20; j++) {
                         if (b[i][j] == P) {
                             n = 0;
@@ -37,6 +36,7 @@ public class TanishFP implements FinalProject {
                         } 
                     }
                     S += " ";
+                    n = 0;
                 }
                 return S;    
             }
@@ -61,6 +61,7 @@ public class TanishFP implements FinalProject {
                         } 
                     }
                     S += " ";
+                    n = 0;
                 }
                 return S;   
             }
@@ -154,10 +155,10 @@ public class TanishFP implements FinalProject {
                         } 
                     }
                     S += " ";
+                    n = 0;
                 }
 
                 for (int i = 1; i < 16; i++) {
-                    S = "";
                     for (int j = i; j < 20; j++) {
                         if (b[19-j+i][j] == P){
                             n = 0;
@@ -174,6 +175,7 @@ public class TanishFP implements FinalProject {
                         } 
                     }
                     S += " ";
+                    n = 0;
                 }
 
                 return S;
@@ -201,6 +203,7 @@ public class TanishFP implements FinalProject {
                         } 
                     }
                     S += " ";
+                    n = 0;
                 }
 
                 for (int i = 0; i < 16; i++) {
@@ -220,6 +223,7 @@ public class TanishFP implements FinalProject {
                         } 
                     }
                     S += " ";
+                    n = 0;
                 }
                 return S;
             }
@@ -246,7 +250,7 @@ public class TanishFP implements FinalProject {
                 this.board = b2;
                 this.dpth = depth;
                 this.p = player;
-                this.scoreDictionary.put("11111", 200); // Five in a Row
+                this.scoreDictionary.put("11111", 100); // Five in a Row
                 this.scoreDictionary.put("11110", 100); // Live Four
                 this.scoreDictionary.put("11101", 100); // Live Four
                 this.scoreDictionary.put("11011", 100);
@@ -256,6 +260,16 @@ public class TanishFP implements FinalProject {
                 this.scoreDictionary.put("001110", 100);
                 this.scoreDictionary.put("010110", 100);
                 this.scoreDictionary.put("011010", 100);
+                this.scoreDictionary.put("22222", -100); // Five in a Row
+                this.scoreDictionary.put("22220", -100); // Live Four
+                this.scoreDictionary.put("22202", -100); // Live Four
+                this.scoreDictionary.put("22022", -100);
+                this.scoreDictionary.put("20222", -100);
+                this.scoreDictionary.put("02222", -100);
+                this.scoreDictionary.put("022200", -100);
+                this.scoreDictionary.put("002220", -100);
+                this.scoreDictionary.put("020220", -100);
+                this.scoreDictionary.put("022020", -100);
             }
 
             // Current Board - Simulated board
@@ -279,23 +293,21 @@ public class TanishFP implements FinalProject {
                 } else {
                     tPlayer = 'O';
                 }
-
-                if (isShortGameOver(currentBoard) != 0 || boardIsFull(currentBoard)) {
-                    // Current Player wins
-                    if (isShortGameOver(currentBoard) == p) return 200;
-                    // Board filled up
-                    else if (isShortGameOver(currentBoard) == 0) return 0;
-                    // Opponent Wins
-                    else {
-                        return -200;
-                    }
-                }
                 
                 // Base Case
                 if (depth == 0) {
                     int score = calculateScore(b, tPlayer);
                     if (maxPlayer) return score;
                     else return -score;
+                }
+
+                if (isShortGameOver(currentBoard) != -1 || boardIsFull(currentBoard)) {
+                    // Board filled up
+                    if (isShortGameOver(currentBoard) == -1) return 0;
+                    // Current Player wins
+                    if (isShortGameOver(currentBoard) == p) return 200;
+                    // Opponent Wins
+                    else return -200;
                 }
 
                 // Playing all possible moves in current combination
@@ -316,13 +328,13 @@ public class TanishFP implements FinalProject {
                     }
                     return curMax;
                 } else {
-                    int curMin = Integer.MAX_VALUE;
+                    int curMin = Integer.MAX_VALUE; // Getting the best move for itself
                     for (int i = 0; i < 20; i++) {
                         for (int j = 0; j < 20; j++) {
                             if (currentBoard[i][j] == '.' && !checkNotValid(currentBoard, i, j)) {
                                 // System.out.println(curMin + ": " + i + " " + j);
                                 currentBoard[i][j] = tPlayer;
-                                int miniMaxValue = miniMax(currentBoard, depth - 1, alpha, beta, opponentPlayer, true);
+                                int miniMaxValue = miniMax(currentBoard, depth - 1, alpha, beta, opponentPlayer, true) + depth;
                                 curMin = Math.min(miniMaxValue, curMin);
                                 beta = Math.min(beta, curMin);
                                 currentBoard[i][j] = '.';
@@ -356,6 +368,7 @@ public class TanishFP implements FinalProject {
                 String[] rv = cTS.getStrings();
                 int c = 0;
                 for (String stringArray : rv) {
+                    // System.out.println(stringArray);
                         for (String pattern : scoreDictionary.keySet()) {
                             c = stringArray.split(pattern, -1).length-1;
                             if (c>0) {
@@ -380,11 +393,12 @@ public class TanishFP implements FinalProject {
                 }
 
                 // Playing all possible moves in current combination
-                int curMax = Integer.MIN_VALUE;
+                int curMax = Integer.MIN_VALUE; // Getting the best move for itself
                 int[] moves = new int[] {0, 0};
                 for (int i = 0; i < 20; i++) {
                     for (int j = 0; j < 20; j++) {
                         if (board[i][j] == '.' && !checkNotValid(board, i, j))  {   
+                            // System.out.println(i + " " + j);
                             // for (int h = 0; h < 20; h++) { for (int k = 0; k < 20; k++) System.out.print(board[h][k] + " "); System.out.println(); }
                             board[i][j] = tPlayer;
                             int miniMaxValue = miniMax(board, dpth, Integer.MIN_VALUE, Integer.MAX_VALUE, op, false);
@@ -401,7 +415,7 @@ public class TanishFP implements FinalProject {
             }
         }
 
-        BestMove findBestMove = new BestMove(b, 2, player);
+        BestMove findBestMove = new BestMove(b, 1, player);
         int[] move = findBestMove.calculatingBestMove();
         
         return move;
@@ -413,75 +427,81 @@ public class TanishFP implements FinalProject {
         return new int[] {0, 0};
     }
 
-    @Override
-    public int isShortGameOver(char[][] arr) {
+    public int isShortGameOver(char[][] board) {
         // This method was largely written by ChatGPT!
         // Check for five consecutive Xs or Os horizontally
-        int hasXorO = 0;
+        int hasXorO = -1;
         for (int i = 0; i < 20; i++) {
             for (int j = 0; j < 16; j++) {
-                if (arr[i][j] == 'X' && arr[i][j + 1] == 'X' && arr[i][j + 2] == 'X' && arr[i][j + 3] == 'X'
-                        && arr[i][j + 4] == 'X') {
+                if (board[i][j] == 'X' && board[i][j + 1] == 'X' && board[i][j + 2] == 'X' && board[i][j + 3] == 'X'
+                        && board[i][j + 4] == 'X') {
                     hasXorO = 1;
                     break;
-                } else if (arr[i][j] == 'O' && arr[i][j + 1] == 'O' && arr[i][j + 2] == 'O' && arr[i][j + 3] == 'O'
-                        && arr[i][j + 4] == 'O') {
+                } else if (board[i][j] == 'O' && board[i][j + 1] == 'O' && board[i][j + 2] == 'O'
+                        && board[i][j + 3] == 'O'
+                        && board[i][j + 4] == 'O') {
                     hasXorO = 2;
                     break;
                 }
             }
-            if (hasXorO != 0) {
+            if (hasXorO != -1) {
                 break;
             }
         }
 
         // Check for five consecutive Xs or Os vertically
-        if (hasXorO == 0) {
+        if (hasXorO == -1) {
             for (int i = 0; i < 16; i++) {
                 for (int j = 0; j < 20; j++) {
-                    if (arr[i][j] == 'X' && arr[i + 1][j] == 'X' && arr[i + 2][j] == 'X' && arr[i + 3][j] == 'X'
-                            && arr[i + 4][j] == 'X') {
+                    if (board[i][j] == 'X' && board[i + 1][j] == 'X' && board[i + 2][j] == 'X' && board[i + 3][j] == 'X'
+                            && board[i + 4][j] == 'X') {
                         hasXorO = 1;
                         break;
-                    } else if (arr[i][j] == 'O' && arr[i + 1][j] == 'O' && arr[i + 2][j] == 'O' && arr[i + 3][j] == 'O'
-                            && arr[i + 4][j] == 'O') {
+                    } else if (board[i][j] == 'O' && board[i + 1][j] == 'O' && board[i + 2][j] == 'O'
+                            && board[i + 3][j] == 'O'
+                            && board[i + 4][j] == 'O') {
                         hasXorO = 2;
                         break;
                     }
                 }
-                if (hasXorO != 0) {
+                if (hasXorO != -1) {
                     break;
                 }
             }
         }
 
         // Check for five consecutive Xs or Os diagonally
-        if (hasXorO == 0) {
+        if (hasXorO == -1) {
             for (int i = 0; i < 16; i++) {
                 for (int j = 0; j < 16; j++) {
-                    if (arr[i][j] == 'X' && arr[i + 1][j + 1] == 'X' && arr[i + 2][j + 2] == 'X' && arr[i + 3][j + 3] == 'X'
-                            && arr[i + 4][j + 4] == 'X') {
+                    if (board[i][j] == 'X' && board[i + 1][j + 1] == 'X' && board[i + 2][j + 2] == 'X'
+                            && board[i + 3][j + 3] == 'X'
+                            && board[i + 4][j + 4] == 'X') {
                         hasXorO = 1;
                         break;
-                    } else if (arr[i][j] == 'O' && arr[i + 1][j + 1] == 'O' && arr[i + 2][j + 2] == 'O'
-                            && arr[i + 3][j + 3] == 'O' && arr[i + 4][j + 4] == 'O') {
+                    } else if (board[i][j] == 'O' && board[i + 1][j + 1] == 'O' && board[i + 2][j + 2] == 'O'
+                            && board[i + 3][j + 3] == 'O' && board[i + 4][j + 4] == 'O') {
                         hasXorO = 2;
                         break;
-                    } else if (arr[i][j + 4] == 'X' && arr[i + 1][j + 3] == 'X' && arr[i + 2][j + 2] == 'X'
-                            && arr[i + 3][j + 1] == 'X' && arr[i + 4][j] == 'X') {
+                    } else if (board[i][j + 4] == 'X' && board[i + 1][j + 3] == 'X' && board[i + 2][j + 2] == 'X'
+                            && board[i + 3][j + 1] == 'X' && board[i + 4][j] == 'X') {
                         hasXorO = 1;
                         break;
-                    } else if (arr[i][j + 4] == 'O' && arr[i + 1][j + 3] == 'O' && arr[i + 2][j + 2] == 'O'
-                            && arr[i + 3][j + 1] == 'O' && arr[i + 4][j] == 'O') {
+                    } else if (board[i][j + 4] == 'O' && board[i + 1][j + 3] == 'O' && board[i + 2][j + 2] == 'O'
+                            && board[i + 3][j + 1] == 'O' && board[i + 4][j] == 'O') {
                         hasXorO = 2;
                         break;
                     }
                 }
-                if (hasXorO != 0) {
+                if (hasXorO != -1) {
                     break;
                 }
             }
         }
+
+        if (boardIsFull(board))
+            return 0;
+
         return hasXorO;
 
     }
