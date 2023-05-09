@@ -19,16 +19,17 @@ public class GraderH2H {
     public static void main(String[] args) {
         GraderH2H g = new GraderH2H();
         g.init();
-        g.playOneGameH2H("short");
-        g.playOneGameH2H("long");
-        // g.playManyH2H();
+        //g.playOneGameH2H("short");
+        //g.playOneGameH2H("long");
+        //g.playManyH2H();
+        g.playBracket("short");
     }
 
     public void init() {
         allFinalProjects = new DSArrayList<>();
         allFinalProjectNames = new DSArrayList<>();
 
-        File folder = new File(".//finalProject//.");
+        File folder = new File(".");
         File[] listOfFiles = folder.listFiles();
         allFinalProjects = new DSArrayList<>();
         allFinalProjectNames = new DSArrayList<>();
@@ -39,7 +40,6 @@ public class GraderH2H {
                 try {
                     String name = listOfFiles[i].getName();
                     String[] nameParts = name.split("\\.");
-                    System.out.println(nameParts[0]);
                     FinalProject fp = (FinalProject) Class.forName(nameParts[0]).getDeclaredConstructor().newInstance();
                     allFinalProjects.add(fp);
                     allFinalProjectNames.add(nameParts[0]);
@@ -57,7 +57,7 @@ public class GraderH2H {
     }
 
     public void playManyH2H(String lOrS) {
-        int numRounds = 10;
+        int numRounds = 100;
         int numPlayers = allFinalProjects.length();
         System.out.println("Number of players: " + numPlayers);
 
@@ -86,6 +86,7 @@ public class GraderH2H {
         }
     }
 
+
     public void playOneGameH2H(String lOrS) {
         this.longOrShort = lOrS;
         int numGames = allFinalProjects.length();
@@ -107,12 +108,106 @@ public class GraderH2H {
     }
 
     /**
+     * Build a random bracket and play the binary-ish tree
+     */
+    private void playBracket(String lors) {
+        this.longOrShort = lors; 
+        int numGames = allFinalProjects.length();
+        DSArrayList<Integer> survivors = new DSArrayList<>();
+        int maxNumGames = 30; // Tie after this many games
+        int threshold = 5; // Win by this many games
+        int numRounds = 1; // To stop when there's no clear winner.
+
+        // Add all indices to survivors
+        for(int i = 0; i < numGames; i++) survivors.add(i);
+
+        System.out.println("Playing Bracketed Tournament");
+
+        while(survivors.length() > 1 && numRounds < 10){
+            System.out.printf("Round %d has %d players.\n", numRounds, survivors.length());
+
+            // Build pairings by shuffling the survivors
+            survivors.shuffle();
+            DSArrayList<Integer> losers = new DSArrayList<>();
+            
+            // Play the pairs and kill the losers
+            for(int i = 0; i < survivors.length() / 2; i++){
+                int game1 = survivors.get(2*i);
+                int game2 = survivors.get(2*i+1);
+                String Player1Name = allFinalProjectNames.get(game1);
+                String Player2Name = allFinalProjectNames.get(game2);
+                int[] record = playBracketSeries(lors, game1, game2, maxNumGames, threshold);
+                System.out.printf("%s as Player 1: (%d, %d, %d), %s as Player 1: (%d, %d, %d)\n", 
+                    Player1Name, record[1], record[2], record[0], Player2Name, record[5], record[6], record[4]);
+                int p1wins = record[1] + record[6];
+                int p2wins = record[2] + record[5];
+                if(p1wins >= p2wins + threshold){
+                    losers.add(game2);
+                    System.out.println("---" + Player2Name + " has been eliminated");
+                }
+                if(p2wins >= p1wins + threshold){
+                    losers.add(game1);
+                    System.out.println("---" + Player1Name + " has been eliminated");
+                }
+            }
+            if(survivors.length() % 2 == 1){
+                System.out.println("+++" + allFinalProjectNames.get(survivors.get(survivors.length() - 1)) + " gets a Bye");
+            }
+
+            // Remove the losers
+            for(int i = 0; i < losers.length(); i++) survivors.removeItem(losers.get(i));
+            System.out.println("");
+
+            // Count rounds
+            numRounds++;
+        }
+
+    }
+
+    /**
+     * Returns [P1 wins with game1 as P1, P2 wins with game1 as P1, Ties with game1 as P1, time, ...P2...]
+     * @param game1
+     * @param game2
+     * @param maxNumGames
+     * @param threshold
+     * @return
+     */
+    private int[] playBracketSeries(String lOrS, int game1, int game2, int maxNumGames, int threshold) {
+        int[] rv = new int[8];
+        int p1 = 0, p2 = 0;
+
+        for (int i = 0; i < maxNumGames; i++) {
+            if(i % 2 == 0){
+                p1 = game1;
+                p2 = game2;
+            } else {
+                p1 = game2;
+                p2 = game1;
+            }
+            int winner;
+            if (lOrS.equals("short"))
+                winner = playShort(p1, p2);
+            else
+                winner = playLong(p1, p2);
+            rv[4*(i%2) + winner]++;
+
+            // See if we should terminate early
+            int p1wins = rv[1] + rv[6];
+            int p2wins = rv[2] + rv[5];
+            if(Math.abs(p1wins - p2wins) >= threshold) break;
+        }
+
+        return rv;
+    }
+
+
+    /**
      * Play a single game between two players, with g1 going first.
      * 
      * @param g1 The index of the first player
      * @param g2 The index of the second player
      * 
-     * @return 0 for a Tie, 1 if g1 wins, 2 if g2 wins.
+     * @return 0 for a Tie, 1 if g1 wins, 2 if g2 wins. -1 if the game is not over.
      * 
      *         Note that as a side effect, this fills the global board[][] array.
      */
@@ -129,6 +224,7 @@ public class GraderH2H {
         int turn = 1;
         int[] move;
         while (isShortGameOver(board) == -1) {
+            //System.out.println(drawBoard(board, "Spying"));
             long startTime = System.currentTimeMillis();
             if (turn == 1) {
                 move = game1.playShortGame(board, turn);
@@ -151,10 +247,11 @@ public class GraderH2H {
         String winnerName = allFinalProjectNames.get(winner == 1 ? g1 : g2);
         if (winner == 0)
             winnerName = "Tie.";
-        System.out.println(drawBoard(board, winnerName));
+        //System.out.println(drawBoard(board, winnerName));
 
         return winner;
     }
+
 
     /**
      * Play a single game between two players, with g1 going first.
@@ -199,10 +296,11 @@ public class GraderH2H {
         String winnerName = allFinalProjectNames.get(winner == 1 ? g1 : g2);
         if (winner == 0)
             winnerName = "Tie.";
-        System.out.println(drawBoard(board, winnerName));
+        //System.out.println(drawBoard(board, winnerName));
 
         return winner;
     }
+
 
     public String drawBoard(char[][] board, String winnerName) {
         int winner = this.longOrShort.equals("short") ? isShortGameOver(board) : isLongGameOver(board);
@@ -215,6 +313,7 @@ public class GraderH2H {
         }
         return rv;
     }
+
 
     /**
      * Return 1 if Player 1 has won, 2 if Player 2 has won,
@@ -302,6 +401,7 @@ public class GraderH2H {
 
     }
 
+
     private boolean boardIsFull(char[][] board) {
         for (int i = 0; i < 20; i++) {
             for (int j = 0; j < 20; j++) {
@@ -312,6 +412,7 @@ public class GraderH2H {
         return true;
     }
 
+
     public int isLongGameOver(char[][] b) {
         if(!boardIsFull(b)) return -1;
 
@@ -320,6 +421,7 @@ public class GraderH2H {
         if(score1 == score2) return 0;
         return score1 > score2 ? 1 : 2;
     }
+
 
     private int longGameScore(char[][] b, int p) {
 		char c = (p == 1) ? 'X' : 'O';
@@ -384,6 +486,7 @@ public class GraderH2H {
         //System.out.println(c + ", N, Long Game Score: " + score);
         return score;
 	}
+
 
 	// Getter
     public DSArrayList<FinalProject> getAllFinalProjects() {

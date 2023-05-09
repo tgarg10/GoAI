@@ -15,7 +15,7 @@ public class TicTacToeGUI extends JFrame implements ActionListener {
     public void readFPfromFile() {
         String name = "";
         if (args.length == 0) {
-            name = "TanishFP";
+            name = "MinimaxFP";
         } else {
             name = args[0];
         }
@@ -58,10 +58,10 @@ public class TicTacToeGUI extends JFrame implements ActionListener {
             }
         }
         
-        int[] mv = fp.playShortGame(board, 1);
-        board[mv[0]][mv[1]] = botPlayer;
-        cells[mv[0]][mv[1]].setText(Character.toString(botPlayer));
-        cells[mv[0]][mv[1]].setEnabled(false);
+        // int[] mv = fp.playShortGame(board, 1);
+        // board[mv[0]][mv[1]] = botPlayer;
+        // cells[mv[0]][mv[1]].setText(Character.toString(botPlayer));
+        // cells[mv[0]][mv[1]].setEnabled(false);
 
         setVisible(true);
     }
@@ -91,7 +91,8 @@ public class TicTacToeGUI extends JFrame implements ActionListener {
             //currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
         }
 
-        int[] mv = fp.playShortGame(board, 1);
+        // int[] mv = fp.playShortGame(board, 2);
+        int[] mv = fp.playLongGame(board, 2);
         board[mv[0]][mv[1]] = botPlayer;
         cells[mv[0]][mv[1]].setText(Character.toString(botPlayer));
         cells[mv[0]][mv[1]].setEnabled(false);
