@@ -91,7 +91,10 @@ public class TicTacToeGUI extends JFrame implements ActionListener {
             //currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
         }
 
-        int[] mv = fp.playShortGame(board, 1);
+        // long time = System.currentTimeMillis();
+        // int[] mv = fp.playShortGame(board, 1);
+        int[] mv = fp.playLongGame(board, 1);
+        // if (System.currentTimeMillis() - time > 1000) System.out.println(System.currentTimeMillis() - time);
         board[mv[0]][mv[1]] = botPlayer;
         cells[mv[0]][mv[1]].setText(Character.toString(botPlayer));
         cells[mv[0]][mv[1]].setEnabled(false);
