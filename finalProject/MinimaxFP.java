@@ -1,4 +1,7 @@
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Random;
 
 public class MinimaxFP implements FinalProject {
 
@@ -561,6 +564,7 @@ public class MinimaxFP implements FinalProject {
     @Override
     public int[] playLongGame(char[][] b, int player) {
         
+        
         class convertToString {
             
             private char[][] b;
@@ -805,7 +809,7 @@ public class MinimaxFP implements FinalProject {
                 this.board = b2;
                 this.dpth = depth;
                 this.p = player;
-
+                
                 // Five in a Row
                 this.scoreDictionary.put("11111", 100000); 
                 // Live Four
@@ -917,13 +921,8 @@ public class MinimaxFP implements FinalProject {
                 }
                 
 
-                if (isLongGameOver(currentBoard) != -1) {
-                    // Current Player wins
-                    if (isLongGameOver(currentBoard) == p) return 200000;
-                    // Opponent Wins
-                    else return -200000;
-                }
-
+                int curLongGameScore = longGameScore(board, player);
+                
                 // Base Case
                 if (depth == 0) {
                     int score = calculateScore(b, tPlayer);
@@ -934,20 +933,17 @@ public class MinimaxFP implements FinalProject {
                 // Playing all possible moves in current combination
                 if (maxPlayer) {
                     int curMax = Integer.MIN_VALUE;
-                    int curLongGameScore = longGameScore(b, player);
-                    int miniMaxValue = curMax;
                     // double value = curMax;
                     for (int i = 0; i < 20; i++) {
                         for (int j = 0; j < 20; j++) {
                             if (currentBoard[i][j] == '.' && !checkNotValid(currentBoard, i, j))  {
                                 // System.out.println(curMax + ": " + i + " " + j);
                                 currentBoard[i][j] = tPlayer;
-                                int simLongGameScore = longGameScore(b, player);
-                                if (simLongGameScore > curLongGameScore) miniMaxValue = (simLongGameScore - curLongGameScore) * 200000; 
-                                else miniMaxValue = miniMax(currentBoard, depth - 1, alpha, beta, opponentPlayer, false);
+                                int miniMaxValue = miniMax(currentBoard, depth - 1, alpha, beta, opponentPlayer, true);
+                                int simLongGameScore = longGameScore(board, player);
+                                if (simLongGameScore > curLongGameScore) miniMaxValue += (simLongGameScore - curLongGameScore) * 100000;
                                 // if (miniMaxValue >= 0) value = Math.pow(miniMaxValue;
                                 //else value = - Math.pow(-miniMaxValue, depth + 10);
-                                
                                 curMax = Math.max(miniMaxValue, curMax);
                                 alpha = Math.max(alpha, curMax);
                                 currentBoard[i][j] = '.';
@@ -958,33 +954,53 @@ public class MinimaxFP implements FinalProject {
                     return curMax;
                 } else {
                     int curMin = Integer.MAX_VALUE; // Getting the best move for itself
-                    int curLongGameScore = longGameScore(b, tPlayer);
-                    int miniMaxValue = curMin;
                     // double value = curMin;
+                    ArrayList<ArrayList<Integer>> toDoMoves = new ArrayList<ArrayList<Integer>>();
                     for (int i = 0; i < 20; i++) {
                         for (int j = 0; j < 20; j++) {
-                            if (currentBoard[i][j] == '.' && !checkNotValid(currentBoard, i, j)) {
-                                // System.out.println(curMin + ": " + i + " " + j);
-                                currentBoard[i][j] = tPlayer;
-                                int simLongGameScore = longGameScore(b, player);
-                                if (simLongGameScore > curLongGameScore) {
-                                    miniMaxValue = - (simLongGameScore - curLongGameScore) * 200000; 
-                                    // System.out.println("here");
-                                }
-                                else {
-                                    miniMaxValue = miniMax(currentBoard, depth - 1, alpha, beta, opponentPlayer, false);
-                                    // System.out.println("No");
-                                } 
-                                // if (miniMaxValue >= 0) value = Math.pow(miniMaxValue, depth + 10);
-                                // else value = - Math.pow(-miniMaxValue, depth + 10);
-                                // System.out.println(value);
-                                curMin = Math.min(miniMaxValue, curMin);
-                                beta = Math.min(beta, curMin);
-                                currentBoard[i][j] = '.';
-                                if (beta <= alpha) return curMin;
+                            if (board[i][j] == '.' && !checkNotValid(board, i, j))  {   
+                                ArrayList<Integer> validMoves = new ArrayList<Integer>();
+                                validMoves.add(i);
+                                validMoves.add(j);
+                                toDoMoves.add(validMoves);
                             }
                         }
                     }
+                    
+                    if (toDoMoves.size() > 30) {
+                        Random r = new Random();
+                        int l = toDoMoves.size();
+                        for (int p = 0; p < toDoMoves.size(); p++) {
+                            int x = r.nextInt(l);
+                            int y = r.nextInt(l);
+                            ArrayList<Integer> xl = toDoMoves.get(x);
+                            ArrayList<Integer> yl = toDoMoves.get(y);
+                            toDoMoves.set(x, yl);
+                            toDoMoves.set(y, xl);
+                        }    
+                    } 
+
+                    int c = 0;
+                    for (ArrayList<Integer> validMoves : toDoMoves) {
+                        int i = validMoves.get(0);
+                        int j = validMoves.get(1);
+                        c++;
+                        if (c > 30) dpth = 0;
+                        if (currentBoard[i][j] == '.' && !checkNotValid(currentBoard, i, j)) {
+                            // System.out.println(curMin + ": " + i + " " + j);
+                            currentBoard[i][j] = tPlayer;
+                            int miniMaxValue = miniMax(currentBoard, depth - 1, alpha, beta, opponentPlayer, true);
+                            int simLongGameScore = longGameScore(board, player);
+                            if (simLongGameScore > curLongGameScore) miniMaxValue -= (simLongGameScore - curLongGameScore) * 100000;
+                            // if (miniMaxValue >= 0) value = Math.pow(miniMaxValue, depth + 10);
+                            // else value = - Math.pow(-miniMaxValue, depth + 10);
+                            // System.out.println(value);
+                            curMin = Math.min(miniMaxValue, curMin);
+                            beta = Math.min(beta, curMin);
+                            currentBoard[i][j] = '.';
+                            if (beta <= alpha) return curMin;
+                        }
+                        }
                     return curMin;
                 }
             }
@@ -1014,10 +1030,10 @@ public class MinimaxFP implements FinalProject {
              
                 for (String stringArray : rv) {
                     // System.out.println(stringArray);
-                    String stringArray2 = stringArray.replaceAll("11111", ""); 
-                    stringArray2.replaceAll("22222", "");
+                    String stringArray2 = stringArray.replace("11111","");
+                    stringArray2.replace("22222","");
                         for (String pattern : scoreDictionary.keySet()) {
-                            c = stringArray2.split(pattern, -1).length-1; 
+                            c = stringArray2.split(pattern, -1).length-1;
                             if (c>0) {
                                 // System.out.println(pattern + " " + checkString);
                                 score += c * scoreDictionary.get(pattern);
@@ -1100,27 +1116,51 @@ public class MinimaxFP implements FinalProject {
                 int alpha = Integer.MIN_VALUE;
                 int beta = Integer.MAX_VALUE;
                 int[] moves = new int[] {10, 10};
-                int miniMaxValue = curMax; 
-                int curLongGameScore = longGameScore(board, p);
+                int curLongGameScore = longGameScore(board, p); 
+                
+                ArrayList<ArrayList<Integer>> toDoMoves = new ArrayList<ArrayList<Integer>>();
                 for (int i = 0; i < 20; i++) {
                     for (int j = 0; j < 20; j++) {
                         if (board[i][j] == '.' && !checkNotValid(board, i, j))  {   
-                            // System.out.println(i + " " + j);
-                            // for (int h = 0; h < 20; h++) { for (int k = 0; k < 20; k++) System.out.print(board[h][k] + " "); System.out.println(); }
-                            board[i][j] = tPlayer;
-                            int simLongGameScore = longGameScore(board, p);
-                            if (simLongGameScore > curLongGameScore) {
-                                miniMaxValue = (simLongGameScore - curLongGameScore) * 200000;
-                            } 
-                            else miniMaxValue = miniMax(board, dpth, alpha, beta, op, false);
-                            if (miniMaxValue > curMax) {
-                                curMax = miniMaxValue;
-                                beta = curMax;
-                                moves = new int[] {i, j};
-                            }
-                            board[i][j] = '.';
+                            ArrayList<Integer> validMoves = new ArrayList<Integer>();
+                            validMoves.add(i);
+                            validMoves.add(j);
+                            toDoMoves.add(validMoves);
                         }
                     }
+                }
+                
+                if (toDoMoves.size() > 30) {
+                    Random r = new Random();
+                    int l = toDoMoves.size();
+                    for (int p = 0; p < toDoMoves.size(); p++) {
+                        int x = r.nextInt(l);
+                        int y = r.nextInt(l);
+                        ArrayList<Integer> xl = toDoMoves.get(x);
+                        ArrayList<Integer> yl = toDoMoves.get(y);
+                        toDoMoves.set(x, yl);
+                        toDoMoves.set(y, xl);
+                    }    
+                } 
+                int c = 0;
+                for (ArrayList<Integer> validMoves : toDoMoves) {
+                    int i = validMoves.get(0);
+                    int j = validMoves.get(1);
+                    c++;
+                    if (c > 30) dpth = 0;
+                    // System.out.println(i + " " + j);
+                    // for (int h = 0; h < 20; h++) { for (int k = 0; k < 20; k++) System.out.print(board[h][k] + " "); System.out.println(); }
+                    board[i][j] = tPlayer;
+                    int miniMaxValue = miniMax(board, dpth, alpha, beta, op, false);
+                    int simLongGameScore = longGameScore(board, player);
+                    // System.out.println(simLongGameScore + " " + curLongGameScore);
+                    if (simLongGameScore > curLongGameScore) miniMaxValue += (simLongGameScore - curLongGameScore) * 200000;
+                    if (miniMaxValue > curMax) {
+                        curMax = miniMaxValue;
+                        beta = curMax;
+                        moves = new int[] {i, j};
+                    }
+                    board[i][j] = '.';
                 }
                 return moves;
             }
