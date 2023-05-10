@@ -6,3 +6,6 @@ There are two kinds of games: the Short Game (that ends after one player wins) a
 
 Currently, Minimax with alpha beta pruning is being used
 Eventually we want to impiment Monte Carlo Tree Searches with neual networks 
+
+To run the file: run GraderGUI.java which runs all the files ending with FP.java in the folder. 
+To play against specific FP.java yourself, use TicTacToeGUI.java
