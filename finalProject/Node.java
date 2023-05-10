@@ -1,4 +1,5 @@
-// {
+// MCTS Code -- Ref to Project Related Links.txt file.
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -56,9 +57,9 @@ class TicTacToeSimulator {
 		setWinningMoves();
 	}
 
-	public static int ROWS = 5;
-	public static int COLS = 5;
-	public static int WINNING_LENGTH = 3; 
+	public static int ROWS = 20;
+	public static int COLS = 20;
+	public static int WINNING_LENGTH = 5; 
 
 	// Generating 
 	private void setWinningMoves() {
@@ -278,7 +279,7 @@ class Main {
 		int winLength = TicTacToeSimulator.WINNING_LENGTH;
 
 		MCTSBestMoveFinder f = new MCTSBestMoveFinder();
-		int numberOfIterations = 10000;
+		int numberOfIterations = 100;
 
 		int [] initGameState = new int [rows*cols];
 		Arrays.fill(initGameState, TicTacToeSimulator.EMPTY);

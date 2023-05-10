@@ -15,7 +15,7 @@ public class TicTacToeGUI extends JFrame implements ActionListener {
     public void readFPfromFile() {
         String name = "";
         if (args.length == 0) {
-            name = "TanishFP";
+            name = "MinimaxFP"; // File Name
         } else {
             name = args[0];
         }
@@ -58,10 +58,16 @@ public class TicTacToeGUI extends JFrame implements ActionListener {
             }
         }
         
-        int[] mv = fp.playShortGame(board, 1);
-        board[mv[0]][mv[1]] = botPlayer;
-        cells[mv[0]][mv[1]].setText(Character.toString(botPlayer));
-        cells[mv[0]][mv[1]].setEnabled(false);
+        // Comment out if you want player to start first.
+        // Play Short Game
+        // int[] mv = fp.playShortGame(board, 1);
+
+        // Play Long Game
+        // int[] mv = fp.playLongGame(board, 1);
+        
+        // board[mv[0]][mv[1]] = botPlayer;
+        // cells[mv[0]][mv[1]].setText(Character.toString(botPlayer));
+        // cells[mv[0]][mv[1]].setEnabled(false);
 
         setVisible(true);
     }
@@ -91,10 +97,11 @@ public class TicTacToeGUI extends JFrame implements ActionListener {
             //currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
         }
 
-        // long time = System.currentTimeMillis();
-        // int[] mv = fp.playShortGame(board, 1);
-        int[] mv = fp.playLongGame(board, 1);
-        // if (System.currentTimeMillis() - time > 1000) System.out.println(System.currentTimeMillis() - time);
+        int[] mv = fp.playShortGame(board, 1);
+
+        // Long Game
+        // int[] mv = fp.playLongGame(board, 1);
+
         board[mv[0]][mv[1]] = botPlayer;
         cells[mv[0]][mv[1]].setText(Character.toString(botPlayer));
         cells[mv[0]][mv[1]].setEnabled(false);

@@ -1,6 +1,8 @@
 import java.lang.reflect.InvocationTargetException;
 import java.util.Scanner;
 
+// Tester for playing on the command line.
+
 public class FPTester {
     
     public static void main(String[] args) {
