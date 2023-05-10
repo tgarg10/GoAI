@@ -1,3 +1,5 @@
+import java.util.Random;
+
 /**
  * Generic DSArrayList that can hold objects of *any* type
  */
@@ -70,6 +72,11 @@ class DSArrayList<E> implements DSList<E> { // automatically a subclass of Objec
         this.length--;
     }
 
+    public void removeItem(E item){
+        int idx = find(item);
+        remove(idx);
+    }
+
     /**
      * Counts number of occurrences of item in our List,
      * assuming that item type implements the equals method.
@@ -118,6 +125,20 @@ class DSArrayList<E> implements DSList<E> { // automatically a subclass of Objec
         // Add the last element of the list
         rv = rv + this.a[this.length - 1] + "]";
         return rv;
+    }
+
+    /**
+     * Shuffle the elements of the list
+     */
+    public void shuffle() {
+        Random rand = new Random();
+        for(int i = 0; i < this.length; i++){
+            int r1 = rand.nextInt(this.length);
+            int r2 = rand.nextInt(this.length);
+            E tmp = this.a[r1];
+            this.a[r1] = this.a[r2];
+            this.a[r2] = tmp;
+        }
     }
 
 }
